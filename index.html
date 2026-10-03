@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MAGZILA PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0f2547;--n2:#1b3a6b;--ac:#f59e0b;--bg:#f3f5fa;--card:#fff;--tx:#1c2333;--mu:#6b7490;--bd:#e3e7f0;--ok:#16a34a;--er:#dc2626}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#131c30;--tx:#e8ecf6;--mu:#93a0bd;--bd:#22304d}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--tx);line-height:1.7;padding-bottom:80px}
+button{font-family:inherit;cursor:pointer}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--navy);color:#fff;position:sticky;top:0;z-index:5}
+header b{letter-spacing:1px}header small{display:block;font-size:11px;opacity:.7}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px));z-index:9}
+nav a{flex:1;text-align:center;font-size:11px;color:var(--mu);text-decoration:none}nav a span{display:block;font-size:20px}nav a.on{color:var(--n2);font-weight:800}
+#v{padding:14px;max-width:760px;margin:auto}
+.g{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+.g .c{margin:0}.c small{color:var(--mu);font-size:12px}.c b.big{display:block;font-size:17px}
+.in{width:100%;padding:11px;border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);font:inherit}
+.b{border:0;border-radius:12px;padding:11px 14px;font-weight:700;background:var(--n2);color:#fff;font-size:14px;text-decoration:none;display:inline-block;text-align:center}
+.b.a{background:var(--ac);color:var(--navy)}.b.s{padding:6px 10px;font-size:12px}.b.o{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}.b.d{background:var(--er)}.b:disabled{opacity:.5}
+.tb{display:flex;gap:8px;margin-bottom:10px}
+.li{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:8px}
+.li small{display:block;color:var(--mu)}.em{text-align:center;color:var(--mu);padding:24px}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.m{background:var(--card);width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px}
+.m h3{margin-bottom:10px}.f{margin-bottom:10px}.f label{display:block;font-size:13px;color:var(--mu)}
+.r{display:flex;gap:8px;margin-top:12px}.r .b{flex:1}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--bd);font-size:14px}
+.ln{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px}
+#t{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:99;width:min(92vw,380px)}
+.ts{padding:11px;border-radius:12px;color:#fff;margin-bottom:6px;font-size:14px}.ts.s{background:var(--ok)}.ts.e{background:var(--er)}
+.lg{max-width:360px;margin:60px auto;text-align:center}.lg .in{margin-bottom:10px}
+@media print{header,nav,#t{display:none!important}}
+</style>
+</head>
+<body>
+<header><div><b>MAGZILA PRO</b><small>مدیریت فروش و سفارش‌گیری مگزیلا</small></div><button class="b s o" id="lo" type="button" style="display:none">خروج</button></header>
+<main id="v"></main>
+<nav id="nv" style="display:none"></nav>
+<div id="t"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ===== تنظیمات اتصال (کلید عمومی؛ امنیت واقعی با RLS در سرور است) =====
+const SB_URL='https://wtnpvzqnmsplkbpeiwta.supabase.co',SB_KEY='sb_publishable_kj_q4GfcqwZuGKxDI52JJA_DtfYsQQ9';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+let uid=null,me=null;
+const $=s=>document.querySelector(s),FA='۰۱۲۳۴۵۶۷۸۹',fa=n=>String(n).replace(/\d/g,d=>FA[d]),en=s=>String(s).replace(/[۰-۹]/g,d=>FA.indexOf(d)),
+num=v=>parseFloat(en(v).replace(/[,٬،\s]/g,''))||0,money=n=>fa(Math.round(n||0).toLocaleString('en-US')).replace(/,/g,'٬')+' تومان',
+esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
+dt=d=>d?new Intl.DateTimeFormat('fa-IR-u-ca-persian',{dateStyle:'medium'}).format(new Date(d)):'—',
+ST={registered:'ثبت‌شده',preparing:'در حال آماده‌سازی',completed:'تکمیل‌شده',delivered:'تحویل‌شده',cancelled:'ابطال‌شده'},
+sale=o=>o.status!=='cancelled'&&o.status!=='draft',
+toast=(m,t='s')=>{const e=document.createElement('div');e.className='ts '+t;e.textContent=m;$('#t').appendChild(e);setTimeout(()=>e.remove(),3800)},
+must=r=>{if(r.error)throw Error(r.error.code==='23505'?'مقدار تکراری است (شماره تماس یا کد)':r.error.message);return r.data};
+function modal(title,html){const b=document.createElement('div');b.className='mb';b.innerHTML=`<div class="m"><h3>${esc(title)}</h3>${html}</div>`;b.onclick=e=>{if(e.target===b)b.remove()};document.body.appendChild(b);return b}
+const ask=msg=>new Promise(res=>{const m=modal('تأیید',`<p>${esc(msg)}</p><div class="r"><button class="b o" id="n">انصراف</button><button class="b d" id="y">تأیید</button></div>`);m.querySelector('#y').onclick=()=>{m.remove();res(true)};m.querySelector('#n').onclick=()=>{m.remove();res(false)}});
+// ===== ورود =====
+function loginView(){
+ $('#nv').style.display='none';$('#lo').style.display='none';
+ $('#v').innerHTML=`<form class="lg c"><h2 style="margin-bottom:12px">ورود</h2><input class="in" id="em" type="email" dir="ltr" placeholder="ایمیل" autocomplete="username"><input class="in" id="pw" type="password" dir="ltr" placeholder="رمز عبور" autocomplete="current-password"><button class="b a" style="width:100%" type="submit">ورود</button></form>`;
+ $('form').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;
+  const r=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});b.disabled=false;
+  if(r.error)return toast('ورود ناموفق: ایمیل یا رمز اشتباه است','e');start(r.data.session)}}
+async function start(s){
+ uid=s.user.id;const r=await sb.from('profiles').select('role,active,full_name').eq('id',uid).maybeSingle();
+ if(r.error||!r.data||!r.data.active){await sb.auth.signOut();loginView();return toast('این حساب فعال نیست یا دسترسی ندارد','e')}
+ me=r.data;$('#nv').style.display='flex';$('#lo').style.display='';route()}
+$('#lo').onclick=async()=>{await sb.auth.signOut();uid=me=null;loginView()};
+// ===== مغازه‌ها و محصولات =====
+const CFG={
+shops:{one:'مغازه',ic:'🏪',keys:['name','owner','phone','area'],f:[['name','نام مغازه',1],['owner','صاحب مغازه'],['phone','شماره تماس',1,'tel'],['phone2','تلفن دوم',0,'tel'],['area','منطقه/محله'],['address','آدرس'],['map_link','لینک نقشه'],['note','توضیحات']],
+ row:s=>[s.name,`${s.owner||'—'} • ${fa(s.phone)} ${s.area||''}`],chk:o=>o.phone.length<8?'شماره تماس معتبر نیست':''},
+products:{one:'محصول',ic:'📦',adminOnly:1,keys:['name','code'],f:[['name','نام محصول',1],['code','کد'],['unit','واحد (عدد، کارتن...)'],['price','قیمت فروش (تومان)',1,'money']],
+ row:p=>[p.name,`${money(p.price)} / ${p.unit||'عدد'}`],chk:o=>o.price<=0?'قیمت باید بیشتر از صفر باشد':''}};
+async function crud(n,auto){
+ const c=CFG[n],can=!c.adminOnly||me.role==='admin',v=$('#v');let busy=false,q='',arch=false;
+ const load=async()=>must(await sb.from(n).select('*').order('created_at',{ascending:false}).limit(1000));
+ let items=await load();
+ v.innerHTML=`<div class="tb"><input class="in" id="q" type="search" placeholder="جست‌وجو..."><button class="b a" id="new" ${can?'':'style="display:none"'}>＋ جدید</button></div><label style="font-size:13px;color:var(--mu)"><input type="checkbox" id="ar"> بایگانی‌شده‌ها</label><div id="l"></div>`;
+ const draw=()=>{const k=en(q).toLowerCase(),a=items.filter(i=>!!i.archived===arch&&(!k||c.keys.some(x=>en(i[x]||'').toLowerCase().includes(k))));
+  $('#l').innerHTML=a.length?a.slice(0,200).map(i=>{const[t,s]=c.row(i);return`<div class="li"><div>${esc(t)}<small>${esc(s)}</small></div>${can?`<div><button class="b s o" data-e="${i.id}">ویرایش</button> <button class="b s o" data-a="${i.id}">${i.archived?'بازگردانی':'بایگانی'}</button></div>`:''}</div>`}).join(''):`<div class="em">${c.ic}<br>${q?'موردی پیدا نشد':'هنوز چیزی ثبت نشده'}</div>`};
+ const form=ex=>{const d=ex||{};const m=modal((ex?'ویرایش ':'')+c.one,`<form>${c.f.map(([k,l,r,t])=>`<div class="f"><label>${l}${r?' *':''}</label><input class="in" name="${k}" ${t?'inputmode="numeric"':''} value="${esc(t==='money'&&d[k]?Number(d[k]).toLocaleString('en-US'):d[k]||'')}"></div>`).join('')}<div class="r"><button class="b o" type="button" id="x">انصراف</button><button class="b a" type="submit">ذخیره</button></div></form>`);
+  m.querySelector('#x').onclick=()=>m.remove();
+  m.querySelector('form').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;try{const o={};
+   c.f.forEach(([k,l,r,t])=>{let x=e.target.elements[k].value.trim();if(t==='money')x=num(x);else if(t==='tel')x=en(x).replace(/\D/g,'');if(r&&!x)throw Error(`«${l}» را وارد کنید`);o[k]=x===''?null:x});
+   const er=c.chk(o);if(er)throw Error(er);
+   if(ex)must(await sb.from(n).update({...o,updated_at:new Date().toISOString()}).eq('id',ex.id));else{if(n==='shops')o.visitor_id=uid;must(await sb.from(n).insert(o))}
+   items=await load();m.remove();draw();toast('ذخیره شد ✓')}catch(x){toast(x.message,'e')}finally{busy=false}}};
+ $('#q').oninput=e=>{q=e.target.value;draw()};$('#ar').onchange=e=>{arch=e.target.checked;draw()};$('#new').onclick=()=>form();
+ $('#l').onclick=async e=>{const b=e.target.closest('button');if(!b)return;try{if(b.dataset.e)form(items.find(i=>i.id===b.dataset.e));if(b.dataset.a){const i=items.find(x=>x.id===b.dataset.a);if(!i.archived&&!await ask(`«${i.name}» بایگانی شود؟ سوابق حفظ می‌شود.`))return;must(await sb.from(n).update({archived:!i.archived}).eq('id',i.id));items=await load();draw()}}catch(x){toast(x.message,'e')}};
+ draw();if(auto&&can)form()}
+// ===== سفارش‌ها =====
+async function orders(auto){
+ const v=$('#v');let os=must(await sb.from('orders').select('*,shops(name)').order('created_at',{ascending:false}).limit(500));
+ const draw=()=>{v.innerHTML=`<button class="b a" id="new" style="width:100%;margin-bottom:10px">＋ ثبت سفارش</button><div id="l">${os.length?os.slice(0,200).map(o=>`<div class="li"><div>#${fa(o.no)} ${esc(o.shops?o.shops.name:'')}<small>${dt(o.created_at)} • ${ST[o.status]} • مانده ${money(sale(o)?o.final-o.paid:0)}</small></div><div><b>${money(o.final)}</b> <button class="b s o" data-v="${o.id}">جزئیات</button></div></div>`).join(''):'<div class="em">🧾<br>سفارشی ثبت نشده</div>'}</div>`;
+  $('#new').onclick=form;$('#l').onclick=e=>{const b=e.target.closest('[data-v]');if(b)detail(os.find(o=>o.id===b.dataset.v))}};
+ const detail=o=>{const adm=me.role==='admin',m=modal(`سفارش #${fa(o.no)}`,`<div class="kv"><span>مغازه</span><b>${esc(o.shops?o.shops.name:'')}</b></div><div class="kv"><span>تاریخ</span><b>${dt(o.created_at)}</b></div><div class="kv"><span>وضعیت</span><b>${ST[o.status]}</b></div>
+  ${o.items.map(i=>`<div class="kv"><span>${esc(i.name)} × ${fa(i.qty)}</span><b>${money(i.qty*i.price)}</b></div>`).join('')}
+  <div class="kv"><span>جمع</span><b>${money(o.total)}</b></div><div class="kv"><span>تخفیف</span><b>${money(o.discount)}</b></div><div class="kv"><span>مبلغ نهایی</span><b>${money(o.final)}</b></div><div class="kv"><span>پرداخت‌شده</span><b>${money(o.paid)}</b></div><div class="kv"><span>مانده</span><b>${money(o.final-o.paid)}</b></div>${o.note?`<p>${esc(o.note)}</p>`:''}${o.cancel_reason?`<p>دلیل ابطال: ${esc(o.cancel_reason)}</p>`:''}
+  <div class="r">${adm&&o.status!=='cancelled'?`<select class="in" id="s">${['registered','preparing','completed','delivered'].map(k=>`<option value="${k}" ${k===o.status?'selected':''}>${ST[k]}</option>`).join('')}</select><button class="b d" id="c">ابطال</button>`:''}<button class="b o" onclick="window.print()">🖨️ چاپ</button><button class="b o" id="x">بستن</button></div>`);
+  m.querySelector('#x').onclick=()=>m.remove();
+  if(m.querySelector('#s'))m.querySelector('#s').onchange=async e=>{try{must(await sb.from('orders').update({status:e.target.value,updated_at:new Date().toISOString()}).eq('id',o.id));o.status=e.target.value;draw();toast('وضعیت تغییر کرد')}catch(x){toast(x.message,'e')}};
+  if(m.querySelector('#c'))m.querySelector('#c').onclick=()=>{const w=modal('ابطال سفارش','<div class="f"><label>دلیل ابطال *</label><input class="in" id="rs"></div><div class="r"><button class="b o" id="n">انصراف</button><button class="b d" id="y">ابطال</button></div>');w.querySelector('#n').onclick=()=>w.remove();w.querySelector('#y').onclick=async()=>{const r=w.querySelector('#rs').value.trim();if(!r)return toast('دلیل را بنویسید','e');try{must(await sb.from('orders').update({status:'cancelled',cancel_reason:r,updated_at:new Date().toISOString()}).eq('id',o.id));os=must(await sb.from('orders').select('*,shops(name)').order('created_at',{ascending:false}).limit(500));w.remove();m.remove();draw();toast('ابطال شد (سابقه حفظ شد)')}catch(x){toast(x.message,'e')}}}};
+ async function form(){const sh=must(await sb.from('shops').select('id,name').eq('archived',false).order('name')),pr=must(await sb.from('products').select('id,name,price').eq('archived',false).order('name'));
+  if(!sh.length||!pr.length)return toast('ابتدا حداقل یک مغازه و یک محصول ثبت کنید','e');let busy=false;const opt=pr.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  const m=modal('سفارش جدید',`<form><div class="f"><label>مغازه *</label><select class="in" id="sh">${sh.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div><div id="ls"></div><button class="b o s" type="button" id="ad">＋ ردیف محصول</button>
+  <div class="f" style="margin-top:10px"><label>تخفیف کلی (تومان)</label><input class="in" id="dc" inputmode="numeric" value="0"></div><div class="f"><label>مبلغ پرداخت‌شده</label><input class="in" id="pd" inputmode="numeric" value="0"></div><div class="f"><label>توضیحات</label><input class="in" id="nt"></div>
+  <div class="kv"><span>مبلغ نهایی</span><b id="fn">۰</b></div><div class="r"><button class="b o" type="button" id="x">انصراف</button><button class="b a" type="submit">ثبت سفارش</button></div></form>`);
+  const calc=()=>{let t=0;m.querySelectorAll('.ln').forEach(l=>t+=num(l.children[1].value)*num(l.children[2].value));const f=t-num(m.querySelector('#dc').value);m.querySelector('#fn').textContent=money(f);return[t,f]};
+  const line=()=>{const d=document.createElement('div');d.className='ln';d.innerHTML=`<select class="in">${opt}</select><input class="in" inputmode="numeric" value="1"><input class="in" inputmode="numeric">`;const sync=()=>{d.children[2].value=(pr.find(p=>p.id===d.children[0].value)||{}).price||0;calc()};d.children[0].onchange=sync;d.oninput=calc;m.querySelector('#ls').appendChild(d);sync()};
+  line();m.querySelector('#ad').onclick=line;m.querySelector('#dc').oninput=calc;m.querySelector('#x').onclick=()=>m.remove();
+  m.querySelector('form').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;try{
+   const its=[...m.querySelectorAll('.ln')].map(l=>{const p=pr.find(x=>x.id===l.children[0].value);return{productId:p.id,name:p.name,qty:num(l.children[1].value),price:num(l.children[2].value)}});
+   if(its.some(i=>i.qty<=0||i.price<0))throw Error('تعداد و قیمت را درست وارد کنید');
+   const[t,f]=calc(),dcv=num(m.querySelector('#dc').value),pd=num(m.querySelector('#pd').value);
+   if(dcv<0||dcv>t)throw Error('تخفیف معتبر نیست');if(pd<0||pd>f)throw Error('پرداخت‌شده بیشتر از مبلغ نهایی است');
+   must(await sb.from('orders').insert({shop_id:m.querySelector('#sh').value,items:its,total:t,discount:dcv,final:f,paid:pd,status:'registered',note:m.querySelector('#nt').value.trim()||null}));
+   os=must(await sb.from('orders').select('*,shops(name)').order('created_at',{ascending:false}).limit(500));m.remove();draw();toast('سفارش ثبت شد ✓')}catch(x){toast(x.message,'e')}finally{busy=false}}}
+ draw();if(auto)form()}
+// ===== دریافت‌ها =====
+// مانده مغازه = جمع سفارش‌های غیرابطالی − پرداخت روی سفارش‌ها − دریافت‌ها (برگشت وجه منفی است)
+const METH=['نقدی','کارت‌به‌کارت','واریز بانکی','چک','سایر','برگشت وجه'];
+const balances=(os,ps)=>{const b={},g=id=>b[id]=b[id]||{s:0,p:0};os.filter(sale).forEach(o=>{const x=g(o.shop_id);x.s+=o.final;x.p+=o.paid});ps.forEach(p=>g(p.shop_id).p+=Number(p.amount));return b};
+async function pay(){
+ const v=$('#v');let sh=must(await sb.from('shops').select('id,name,archived')),os=must(await sb.from('orders').select('shop_id,final,paid,status').limit(5000)),ps=must(await sb.from('payments').select('*').order('created_at',{ascending:false}).limit(1000));
+ const draw=()=>{const b=balances(os,ps);v.innerHTML=`<button class="b a" id="new" style="width:100%;margin-bottom:10px">＋ ثبت دریافت</button><div class="c"><b>مانده حساب مغازه‌ها</b>${Object.keys(b).length?Object.keys(b).map(id=>{const s=sh.find(x=>x.id===id),x=b[id];return`<div class="kv"><span>${esc(s?s.name:'؟')}</span><b>${money(x.s-x.p)}</b></div>`}).join(''):'<div class="em">هنوز حسابی نیست</div>'}</div>
+  <div class="c"><b>دریافت‌های ثبت‌شده</b>${ps.length?ps.slice(0,100).map(p=>{const s=sh.find(x=>x.id===p.shop_id);return`<div class="kv"><span>${esc(s?s.name:'؟')} • ${p.method} • ${dt(p.created_at)}${p.note?' • '+esc(p.note):''}</span><b>${money(p.amount)}</b></div>`}).join(''):'<div class="em">دریافتی ثبت نشده</div>'}</div>`;$('#new').onclick=form};
+ const form=()=>{const a=sh.filter(x=>!x.archived);if(!a.length)return toast('ابتدا یک مغازه ثبت کنید','e');let busy=false;
+  const m=modal('ثبت دریافت',`<form><div class="f"><label>مغازه *</label><select class="in" id="s">${a.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></div><div class="f"><label>مبلغ (تومان) *</label><input class="in" id="am" inputmode="numeric"></div><div class="f"><label>روش</label><select class="in" id="me">${METH.map(x=>`<option>${x}</option>`).join('')}</select></div><div class="f"><label>شماره پیگیری / توضیحات</label><input class="in" id="nt"></div><div class="r"><button class="b o" type="button" id="x">انصراف</button><button class="b a" type="submit">ذخیره</button></div></form>`);
+  m.querySelector('#x').onclick=()=>m.remove();
+  m.querySelector('form').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;try{let am=num(m.querySelector('#am').value);if(am<=0)throw Error('مبلغ را وارد کنید');const me2=m.querySelector('#me').value;if(me2==='برگشت وجه')am=-am;
+   must(await sb.from('payments').insert({shop_id:m.querySelector('#s').value,amount:am,method:me2,note:m.querySelector('#nt').value.trim()||null}));ps=must(await sb.from('payments').select('*').order('created_at',{ascending:false}).limit(1000));m.remove();draw();toast('ثبت شد ✓')}catch(x){toast(x.message,'e')}finally{busy=false}}};
+ draw()}
+// ===== داشبورد =====
+async function dash(){
+ const[os,sh,ps]=await Promise.all([sb.from('orders').select('*,shops(name)').order('created_at',{ascending:false}).limit(2000),sb.from('shops').select('id,archived'),sb.from('payments').select('amount').limit(5000)].map(p=>p.then(must)));
+ const s=os.filter(sale),n=new Date(),same=(a,b)=>a.toDateString()===b.toDateString(),sum=f=>s.filter(f).reduce((a,o)=>a+Number(o.final),0),wk=new Date(n.getFullYear(),n.getMonth(),n.getDate()-(n.getDay()+1)%7);
+ const mo=d=>new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'numeric'}).format(d),rc=s.reduce((a,o)=>a+Number(o.final)-Number(o.paid),0)-ps.reduce((a,p)=>a+Number(p.amount),0);
+ const c=(i,l,x)=>`<div class="c"><small>${i} ${l}</small><b class="big">${x}</b></div>`;
+ $('#v').innerHTML=`<div class="g">${c('💵','فروش امروز',money(sum(o=>same(new Date(o.created_at),n))))}${c('📅','فروش هفته',money(sum(o=>new Date(o.created_at)>=wk)))}${c('🗓️','فروش ماه',money(sum(o=>mo(new Date(o.created_at))===mo(n))))}${c('🧾','سفارش‌ها',fa(s.length))}${c('🏪','مغازه فعال',fa(sh.filter(x=>!x.archived).length))}${c('📤','مطالبات',money(rc))}</div>
+ <div class="c"><b>آخرین سفارش‌ها</b>${os.length?os.slice(0,5).map(o=>`<div class="kv"><span>#${fa(o.no)} ${esc(o.shops?o.shops.name:'')}</span><b>${money(o.final)}</b></div>`).join(''):'<div class="em">سفارشی نیست</div>'}</div>
+ <div class="g"><a class="b a" href="#/orders/new">＋ سفارش</a><a class="b" href="#/shops/new">＋ مغازه</a><a class="b" href="#/payments">💰 دریافت</a><a class="b" href="#/backup">💾 بکاپ</a></div>`}
+// ===== بکاپ (خروجی کامل از سرور) =====
+async function backup(){
+ $('#v').innerHTML=`<div class="c"><b>بکاپ کامل از دیتابیس آنلاین</b><br><small>همه مغازه‌ها، محصولات، سفارش‌ها و دریافت‌ها در یک فایل JSON.</small><button class="b a" id="bk" style="width:100%;margin-top:10px">⬇️ دانلود بکاپ</button></div><div class="c"><small>اطلاعات اصلی روی سرور است و با پاک شدن مرورگر از بین نمی‌رود. فایل بکاپ یک نسخه اضافه برای احتیاط است. بازیابی از فایل در این نسخه ساخته نشده است.</small></div>`;
+ $('#bk').onclick=async e=>{e.target.disabled=true;try{const d={};for(const t of['shops','products','orders','payments','cheques'])d[t]=must(await sb.from(t).select('*').limit(10000));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({app:'MAGZILA PRO',exportedAt:new Date().toISOString(),data:d})],{type:'application/json'}));a.download='magzila-online-backup.json';document.body.appendChild(a);a.click();a.remove();toast('بکاپ ساخته شد ✓ فایل را در دانلودها بررسی کنید')}catch(x){toast(x.message,'e')}finally{e.target.disabled=false}}}
+// ===== مسیریابی =====
+const NAV=[['dashboard','🏠','داشبورد'],['orders','🧾','سفارش‌ها'],['shops','🏪','مغازه‌ها'],['products','📦','محصولات'],['payments','💰','دریافت‌ها'],['backup','💾','بکاپ']];
+$('#nv').innerHTML=NAV.map(([i,e,l])=>`<a href="#/${i}" data-i="${i}"><span>${e}</span>${l}</a>`).join('');
+async function route(){if(!me)return;const[id,arg]=location.hash.replace('#/','').split('/'),p=NAV.find(x=>x[0]===id)?id:'dashboard';
+ document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.i===p));$('#v').innerHTML='<div class="em">…</div>';
+ try{if(p==='dashboard')await dash();else if(p==='orders')await orders(arg==='new');else if(p==='payments')await pay();else if(p==='backup')await backup();else await crud(p,arg==='new')}catch(e){$('#v').innerHTML=`<div class="c">⚠️ ${esc(e.message)}</div>`}}
+window.addEventListener('hashchange',route);
+window.addEventListener('unhandledrejection',e=>toast('خطا: '+(e.reason&&e.reason.message||e.reason),'e'));
+(async()=>{try{const r=await sb.auth.getSession();if(r.data.session)start(r.data.session);else loginView()}catch(e){$('#v').innerHTML=`<div class="c">⚠️ اتصال به سرور برقرار نشد: ${esc(e.message)}</div>`}})();
+</script>
+</body>
+</html>
